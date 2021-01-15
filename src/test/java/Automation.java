@@ -35,43 +35,51 @@ public class Automation {
         driver.get("https://help.salesforce.com");
 
 //2) В инпут на странице написать outloook for salesforce  // в слове "outloook" опечатка, поэтому не удавалось сразу найти Quick Starts
-        driver.findElement(By.xpath("//tds-header-search/div[@id='tds-header-search']/div[1]/div[1]/div[2]/div[1]/input[1]")).sendKeys("outlook for salesforce");
+        findElement(By.xpath("//tds-header-search/div[@id='tds-header-search']/div[1]/div[1]/div[2]/div[1]/input[1]")).sendKeys("outlook for salesforce");
 
 //3) Нажать на иконку лупы
-        driver.findElement(By.xpath("//tds-header-search/div[@id='tds-header-search']/div[1]/span[1]/*[1]")).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(),'Help us Improve your results in 1 minute or less.')]")));
+        findElement(By.xpath("//tds-header-search/div[@id='tds-header-search']/div[1]/span[1]/*[1]")).click();
+        waitingForElement(By.xpath("//a[contains(text(),'Help us Improve your results in 1 minute or less.')]"));
 
 //4) На следующей странице в блоке Content Type выбрать Quick Starts
-        driver.findElement(By.xpath("//body/div[1]/div[1]/div[1]/span[1]/help-search[1]/div[1]/search-results[1]/div[1]/div[2]/div[1]/div[4]/div[3]/div[2]")).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(text(),'Quick Starts')]")));
-        driver.findElement(By.xpath("//span[contains(text(),'Quick Starts')]")).click();
+        findElement(By.xpath("//body/div[1]/div[1]/div[1]/span[1]/help-search[1]/div[1]/search-results[1]/div[1]/div[2]/div[1]/div[4]/div[3]/div[2]")).click();
+        waitingForElement(By.xpath("//span[contains(text(),'Quick Starts')]"));
+        findElement(By.xpath("//span[contains(text(),'Quick Starts')]")).click();
 
 //5) Кликнуть на первый результат на странице
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(),'Getting Started with Sales Cloud Einstein')]")));
-        driver.findElement(By.xpath("//body/div[1]/div[1]/div[1]/span[1]/help-search[1]/div[1]/search-results[1]/div[1]/div[2]/div[2]/div[1]/div[9]/div[2]/div[1]/div[1]/a[1]")).click();
+        waitingForElement(By.xpath("//a[contains(text(),'Getting Started with Sales Cloud Einstein')]"));
+        findElement(By.xpath("//body/div[1]/div[1]/div[1]/span[1]/help-search[1]/div[1]/search-results[1]/div[1]/div[2]/div[2]/div[1]/div[9]/div[2]/div[1]/div[1]/a[1]")).click();
 
 //6) На следующей странице проверить, что блок Related Resources присутствует
-        wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Contact Support")));
+        waitingForElement(By.linkText("Contact Support"));
 //        Thread.sleep(2000);
-        if (driver.findElement(By.xpath("//div[@id='relatedresources_articleview']")).isDisplayed()) {
+        if (findElement(By.xpath("//div[@id='relatedresources_articleview']")).isDisplayed()) {
             System.out.println("Блок Related Resources присутствует");
         } else {
             System.out.println("Блок Related Resources отсутствует");
         }
 
 //7) Кликнуть на первый результат в этом блоке
-        driver.findElement(By.linkText("Salesforce for Outlook")).click();
+        findElement(By.linkText("Salesforce for Outlook")).click();
 
 //8) Проверить, что странице не показывает ошибку 404
 //        driver.get("https://help.salesforce.com/articleView?id=outldsadasookcrm_sfo_about.htm&type=5"); // для вызова заглушки 404
         List<WebElement> dynamicElements = driver.findElements(By.xpath("//div/error-block"));
         if (dynamicElements.size() != 0) {
-            String errors = driver.findElement(By.xpath("//div/error-block")).getAttribute("error-code");
+            String errors = findElement(By.xpath("//div/error-block")).getAttribute("error-code");
             System.out.println("Страница показывает ошибку: " + errors);
         } else {
             System.out.println("Страница не показывает ошибку 404");
         }
 
         driver.quit();
+    }
+
+    public static WebElement findElement(By element) {
+        return driver.findElement(element);
+    }
+
+    public static WebElement waitingForElement(By element) {
+        return wait.until(ExpectedConditions.elementToBeClickable(element));
     }
 }
